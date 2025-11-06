@@ -1,4 +1,4 @@
-package com.example.project;
+package com.aflt.project;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,7 +7,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ProjectApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ProjectApplication.class, args);
+
+        try {
+            SpringApplication.run(ProjectApplication.class, args);
+        }catch (Exception exception){
+            System.out.println(exception.getMessage());
+
+        }
     }
 
 }
