@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
 <h1>Helo AFLT</h1>
+
+<h3>Stock Update</h3>
+<form th:action="@{/stocks}"  method="get">
+
+    <button type="submit">Stock Viewer</button>
+</form>
+
 
 </body>
 </html>

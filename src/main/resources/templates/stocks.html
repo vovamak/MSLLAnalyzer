@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Stock Management</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<h1>Stock Management</h1>
+
+<!-- Форма поиска -->
+<div class="search-form">
+    <h3>Search by Part Number</h3>
+    <form th:action="@{/stocks/search}" method="get">
+        <input type="text" name="partNumber" placeholder="Enter part number" required>
+        <button type="submit">Search</button>
+        <a href="/stocks" style="margin-left: 10px;">Show All</a>
+    </form>
+</div>
+
+<!-- Форма добавления -->
+<h3>Add New Stock</h3>
+<form th:action="@{/stocks/add}" th:object="${newStock}" method="post">
+    <div class="form-group">
+        <label>Part Number:</label>
+        <input type="text" th:field="*{partNumber}" required>
+    </div>
+    <div class="form-group">
+        <label>Expire Date:</label>
+        <input type="date" th:field="*{expireDate}">
+    </div>
+    <div class="form-group">
+        <label>Quantity:</label>
+        <input type="number" step="0.01" th:field="*{quantity}" required>
+    </div>
+    <div class="form-group">
+        <label>Measure Unit:</label>
+        <input type="text" th:field="*{measureUnit}">
+    </div>
+    <div class="form-group">
+        <label>Station:</label>
+        <input type="text" th:field="*{station}">
+    </div>
+    <div class="form-group">
+        <label>Store:</label>
+        <input type="text" th:field="*{store}">
+    </div>
+    <div class="form-group">
+        <label>Owner:</label>
+        <input type="text" th:field="*{owner}">
+    </div>
+    <button type="submit">Add Stock</button>
+</form>
+
+<!-- Таблица данных -->
+<h3>Stock List</h3>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Part Number</th>
+        <th>Expire Date</th>
+        <th>Quantity</th>
+        <th>Measure Unit</th>
+        <th>Station</th>
+        <th>Store</th>
+        <th>Owner</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="stock : ${stocks}">
+        <td th:text="${stock.id}"></td>
+        <td th:text="${stock.partNumber}"></td>
+        <td th:text="${stock.expireDate}"></td>
+        <td th:text="${stock.quantity}"></td>
+        <td th:text="${stock.measureUnit}"></td>
+        <td th:text="${stock.station}"></td>
+        <td th:text="${stock.store}"></td>
+        <td th:text="${stock.owner}"></td>
+        <td>
+            <a th:href="@{/stocks/delete/{id}(id=${stock.id})}"
+               class="delete-btn"
+               onclick="return confirm('Are you sure?')">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:if="${#lists.isEmpty(stocks)}">
+    <p>No stocks found.</p>
+</div>
+</body>
+</html>
