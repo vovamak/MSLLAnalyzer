@@ -12,6 +12,7 @@
 <div class="search-form">
     <h3>Search by Part Number</h3>
     <form th:action="@{/stocks/search}" method="get">
+
         <input type="text" name="partNumber" placeholder="Enter part number" required>
         <button type="submit">Search</button>
         <a th:href="@{/stocks(all=true)}" style="margin-left: 10px;">Show All</a>
@@ -19,8 +20,9 @@
 </div>
 
 <!-- Таблица данных -->
-<h3>Stock List</h3>
+<!--<h3>Stock List</h3>-->
 <table th:if="${stocks != null and !#lists.isEmpty(stocks)}">
+    <h3>Stock List</h3>
     <thead>
     <tr>
         <th>ID</th>
@@ -53,12 +55,25 @@
     </tbody>
 </table>
 
-<div th:if="${stocks == null}">
-    <p>Use "Search" or "Show All" to display stock list.</p>
-</div>
+<!--<div th:if="${stocks == null}">-->
+<!--    <p>Use "Search" or "Show All" to display stock list.</p>-->
+<!--</div>-->
 
 <div th:if="${stocks != null and #lists.isEmpty(stocks)}">
     <p>No stocks found.</p>
+</div>
+
+<!-- Форма загрузки файла -->
+
+<div class="upload-form">
+    <h3>Update from Excel File</h3>
+    <form th:action="@{/stocks/upload}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".xlsx,.xls" required>
+        <button type="submit">Update from File</button>
+        <span style="margin-left: 10px; color: #666;">
+            Upload Excel file to replace all stocks
+        </span>
+    </form>
 </div>
 </body>
 </html>
