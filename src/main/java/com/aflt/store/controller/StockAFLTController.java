@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/stocks")
 public class StockAFLTController {
@@ -17,11 +19,19 @@ public class StockAFLTController {
     }
 
     @GetMapping
-    public String getAllStocks(Model model) {
-        model.addAttribute("stocks", stockService.getAllStocks());
-        model.addAttribute("newStock", new StockAFLT());
+    public String getAllStocks(@RequestParam(value = "all", required = false) Boolean showAll,
+                               Model model) {
+        if (showAll != null && showAll) {
+            // Получить все записи из базы данных
+            List<StockAFLT> stocks = stockService.getAllStocks();
+            model.addAttribute("stocks", stocks);
+        } else {
+            // При обычной загрузке страницы не передаем список
+            model.addAttribute("stocks", null);
+        }
         return "stocks";
     }
+
 
     @PostMapping("/add")
     public String addStock(@ModelAttribute StockAFLT stock) {
