@@ -2,14 +2,22 @@ package com.aflt.store.service;
 
 import com.aflt.store.entity.StockAFLT;
 import com.aflt.store.repository.StockAFLTRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class StockAFLTService {
     private final StockAFLTRepository stockRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+
 
     public StockAFLTService(StockAFLTRepository stockRepository) {
         this.stockRepository = stockRepository;
@@ -19,13 +27,6 @@ public class StockAFLTService {
         return stockRepository.findAll();
     }
 
-    public Optional<StockAFLT> getStockById(Long id) {
-        return stockRepository.findById(id);
-    }
-
-    public StockAFLT saveStock(StockAFLT stock) {
-        return stockRepository.save(stock);
-    }
 
     public void deleteStock(Long id) {
         stockRepository.deleteById(id);
@@ -34,9 +35,16 @@ public class StockAFLTService {
     public List<StockAFLT> getStocksByPartNumber(String partNumber) {
         return stockRepository.findByPartNumber(partNumber);
     }
-
-    public List<StockAFLT> getStocksByStation(String station) {
-        return stockRepository.findByStation(station);
+    @Transactional
+    public void deleteAllStocks() {
+        stockRepository.deleteAll();
+        // Сбрасываем последовательность к 1
+        entityManager.createNativeQuery("ALTER SEQUENCE stock_aflt_id_seq RESTART WITH 1").executeUpdate();
     }
+    public void saveAllStocks(List<StockAFLT> stocks) {
+        stockRepository.saveAll(stocks);
+    }
+
+
 }
 

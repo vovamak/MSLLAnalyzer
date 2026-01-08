@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface StockAFLTRepository extends JpaRepository<StockAFLT, Long> {
     List<StockAFLT> findByPartNumber(String partNumber);
-    List<StockAFLT> findByStation(String station);
+
 }

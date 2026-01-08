@@ -7,6 +7,12 @@
 </head>
 <body>
 <h1>Stock Management</h1>
+<div th:if="${message != null}" style="color: green; padding: 10px; background-color: #e8f5e8;">
+    <span th:text="${message}"></span>
+</div>
+<div th:if="${error != null}" style="color: red; padding: 10px; background-color: #ffebee;">
+    <span th:text="${error}"></span>
+</div>
 
 <!-- Форма поиска -->
 <div class="search-form">
