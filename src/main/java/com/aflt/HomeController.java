@@ -1,4 +1,4 @@
-package com.aflt.project.controller;
+package com.aflt;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Purchase Orders</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<h1>Purchase Order Management</h1>
+<div th:if="${message != null}" style="color: green; padding: 10px; background-color: #e8f5e8;">
+    <span th:text="${message}"></span>
+</div>
+<div th:if="${error != null}" style="color: red; padding: 10px; background-color: #ffebee;">
+    <span th:text="${error}"></span>
+</div>
+
+<!-- Формы поиска -->
+<div class="search-forms">
+    <div class="search-form">
+        <h3>Search by Part Number</h3>
+        <form th:action="@{/purchase-orders/search}" method="get">
+            <input type="text" name="partNo" placeholder="Enter part number" required>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="search-form">
+        <h3>Search by Order Number</h3>
+        <form th:action="@{/purchase-orders/search-by-order}" method="get">
+            <input type="text" name="orderNo" placeholder="Enter order number" required>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <a th:href="@{/purchase-orders(all=true)}" class="btn">Show All Orders</a>
+    </div>
+</div>
+
+<!-- Таблица данных -->
+<table th:if="${purchaseOrders != null and !#lists.isEmpty(purchaseOrders)}">
+    <h3>Purchase Order List</h3>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Order No.</th>
+        <th>Ext. Order No.</th>
+        <th>Date</th>
+        <th>Part No.</th>
+        <th>Backorder</th>
+        <th>Shipment No.</th>
+        <th>Target Date</th>
+        <th>Confirmed Date</th>
+        <th>Priority</th>
+        <th>Responsible</th>
+        <th>Created By</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${purchaseOrders}">
+        <td th:text="${order.id}"></td>
+        <td th:text="${order.orderNo}"></td>
+        <td th:text="${order.extOrderNo}"></td>
+        <td th:text="${order.date}"></td>
+        <td th:text="${order.partNo}"></td>
+        <td th:text="${order.backorder}"></td>
+        <td th:text="${order.shipmentNo}"></td>
+        <td th:text="${order.targetDate}"></td>
+        <td th:text="${order.confirmedDate}"></td>
+        <td th:text="${order.priority}"></td>
+        <td th:text="${order.responsible}"></td>
+        <td th:text="${order.createdBy}"></td>
+        <td>
+            <a th:href="@{/purchase-orders/delete/{id}(id=${order.id})}"
+               class="delete-btn"
+               onclick="return confirm('Are you sure you want to delete this order?')">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:if="${purchaseOrders != null and #lists.isEmpty(purchaseOrders)}">
+    <p>No purchase orders found.</p>
+</div>
+
+<!-- Форма загрузки файла -->
+<div class="upload-form">
+    <h3>Update from Excel File</h3>
+    <form th:action="@{/purchase-orders/upload}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".xlsx,.xls" required>
+        <button type="submit">Update from File</button>
+        <span style="margin-left: 10px; color: #666;">
+            Upload Excel file to replace all purchase orders
+        </span>
+    </form>
+</div>
+
+<div style="margin-top: 30px;">
+    <a th:href="@{/}" class="btn">Back to Home</a>
+</div>
+</body>
+</html>
