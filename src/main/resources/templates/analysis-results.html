@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Analysis Results</title>
+  <link rel="stylesheet" th:href="@{/style.css}">
+  <style>
+    .result-card {
+      border: 1px solid #ddd;
+      margin: 20px 0;
+      padding: 20px;
+      border-radius: 5px;
+    }
+    .summary {
+      background-color: #f8f9fa;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .stock-table, .order-table {
+      flex: 1;
+      min-width: 300px;
+    }
+    .owner-summary {
+      background-color: #e8f4fd;
+      padding: 10px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1 th:text="${analysisType}">Analysis Results</h1>
+  <a th:href="@{/}" class="btn">Back to Home</a>
+
+  <!-- Используем th:if с правильным синтаксисом -->
+  <div th:if="${#lists.isEmpty(results)}">
+    <p>No results found.</p>
+  </div>
+
+  <!-- Исправлен синтаксис выражения в th:each -->
+  <div th:each="result : ${results}" class="result-card">
+    <!-- Исправлен конкатенация строк -->
+    <h2>
+      <span th:text="${result.productCode} + ' - ' + ${result.description}"></span>
+    </h2>
+
+    <!-- Используем th:if для проверки списков -->
+    <div th:if="${not #lists.isEmpty(result.lists)}" class="lists">
+      <strong>Lists:</strong>
+      <!-- Исправлен синтаксис th:each с индексацией -->
+      <span th:each="list, iterStat : ${result.lists}">
+                <span th:text="${list}"></span>
+                <span th:if="${not iterStat.last}">, </span>
+            </span>
+    </div>
+
+    <!-- Сводка по складу -->
+    <div class="summary">
+      <h3>Stock Summary</h3>
+      <p>
+        <strong>Total Quantity:</strong>
+        <span th:text="${result.totalStock} + ' ' + ${result.measureUnit}"></span>
+      </p>
+
+      <!-- Используем th:if с map -->
+      <div th:if="${not result.stockByOwner.isEmpty()}">
+        <h4>By Owner:</h4>
+        <!-- Исправленный синтаксис для перебора map -->
+        <div th:each="entry : ${result.stockByOwner.entrySet()}" class="owner-summary">
+          <span th:text="${entry.key}">Owner</span>:
+          <span th:text="${entry.value} + ' ' + ${result.measureUnit}">Quantity</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="details">
+      <!-- Детали склада -->
+      <div class="stock-table" th:if="${not #lists.isEmpty(result.stockDetails)}">
+        <h3>Stock Details</h3>
+        <table>
+          <thead>
+          <tr>
+            <th>Part Number</th>
+            <th>Quantity</th>
+            <th>Owner</th>
+            <th>Expire Date</th>
+            <th>Station</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="stock : ${result.stockDetails}">
+            <td th:text="${stock.partNumber}"></td>
+            <td th:text="${stock.quantity} + ' ' + ${stock.measureUnit}"></td>
+            <td th:text="${stock.owner}"></td>
+            <td th:text="${stock.expireDate}"></td>
+            <td th:text="${stock.station}"></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Детали заказов -->
+      <div class="order-table" th:if="${not #lists.isEmpty(result.purchaseOrderDetails)}">
+        <h3>Purchase Orders</h3>
+        <p>
+          <strong>Total Orders:</strong>
+          <span th:text="${result.totalPurchaseOrders}"></span>
+        </p>
+
+        <table>
+          <thead>
+          <tr>
+            <th>Order No</th>
+            <th>Part No</th>
+            <th>Backorder</th>
+            <th>Target Date</th>
+            <th>Priority</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="order : ${result.purchaseOrderDetails}">
+            <td th:text="${order.orderNo}"></td>
+            <td th:text="${order.partNumber}"></td>
+            <td th:text="${order.backorder}"></td>
+            <td th:text="${order.targetDate}"></td>
+            <td th:text="${order.priority}"></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

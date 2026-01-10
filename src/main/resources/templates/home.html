@@ -1,23 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>AFLT Analysis System</title>
     <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
-<h1>Helo AFLT</h1>
+<div class="container">
+    <h1>AFLT Stock &amp; Purchase Order Analysis System</h1>
 
-<h3>Stock Update</h3>
-<form th:action="@{/stocks}"  method="get">
+    <div class="sections">
+        <!-- Анализ по part numbers -->
+        <div class="section">
+            <h3>Analyze by Part Numbers</h3>
+            <form th:action="@{/analysis/analyze-parts}" method="post">
+                <div class="form-group">
+                    <label for="partNumbers">Enter Part Numbers (one per line):</label>
+                    <textarea id="partNumbers" name="partNumbers" rows="6"
+                              placeholder="P001&#10;P002&#10;P003"
+                              style="width: 300px; margin: 10px 0;"></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Analyze</button>
+            </form>
+        </div>
 
-    <button type="submit">Stock Viewer</button>
-</form>
-<h3>Purchase Order Update</h3>
-<form th:action="@{/purchase-orders}"  method="get">
+        <!-- Анализ по спискам -->
+        <div class="section">
+            <h3>Analyze by List</h3>
+            <form th:action="@{/analysis/analyze-list}" method="post">
+                <div class="form-group">
+                    <label for="listName">Select List:</label>
+                    <select id="listName" name="listName" style="margin: 10px; padding: 5px;">
+                        <option value="MSLL">MSLL</option>
+                        <option value="НЗ">НЗ</option>
+                        <option value="общехоз">Общехоз</option>
+                        <option value="STR">STR</option>
+                        <option value="ALL">All Products</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Analyze List</button>
+            </form>
+        </div>
 
-    <button type="submit">Purchase Order Viewer</button>
-</form>
+        <!-- Управление продуктами -->
+        <div class="section">
+            <h3>Product Management</h3>
+            <div class="button-group">
+                <a th:href="@{/products}" class="btn-secondary">View All Products</a>
+                <a th:href="@{/products/new}" class="btn-secondary">Add New Product</a>
+                <a th:href="@{/products/search}" class="btn-secondary">Search Product</a>
+            </div>
+        </div>
 
+        <!-- Основные функции -->
+        <div class="section">
+            <h3>Core Functions</h3>
+            <div class="button-group">
+                <form th:action="@{/stocks}" method="get" style="display: inline;">
+                    <button type="submit" class="btn">Stock Management</button>
+                </form>
+                <form th:action="@{/purchase-orders}" method="get" style="display: inline;">
+                    <button type="submit" class="btn">Purchase Order Management</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

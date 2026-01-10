@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Products</title>
+  <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div class="container">
+  <h1>Search Products</h1>
+
+  <div class="search-form">
+    <form th:action="@{/products/search}" method="get">
+      <input type="text" name="query"
+             th:value="${searchQuery}"
+             placeholder="Search by product code or description">
+      <button type="submit" class="btn-primary">Search</button>
+      <a th:href="@{/products}" class="btn">View All</a>
+    </form>
+  </div>
+
+  <!-- Используем th:if вместо th:unless для проверки наличия query -->
+  <div th:if="${searchQuery != null and not #strings.isEmpty(searchQuery)}">
+    <h3>Search Results for: <span th:text="${searchQuery}"></span></h3>
+  </div>
+
+  <div th:if="${products != null and #lists.isEmpty(products)}">
+    <p>No products found.</p>
+  </div>
+
+  <div th:if="${products != null and not #lists.isEmpty(products)}">
+    <table>
+      <thead>
+      <tr>
+        <th>Product Code</th>
+        <th>Description</th>
+        <th>Parts</th>
+        <th>Lists</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="product : ${products}">
+        <td th:text="${product.productCode}"></td>
+        <td th:text="${product.description}"></td>
+        <td th:text="${#lists.size(product.parts)}"></td>
+        <td>
+                        <span th:if="${not #lists.isEmpty(product.lists)}">
+                            <span th:each="list, iterStat : ${product.lists}">
+                                <span th:text="${list}"></span>
+                                <span th:if="${not iterStat.last}">, </span>
+                            </span>
+                        </span>
+        </td>
+        <td>
+          <a th:href="@{/products/edit/{id}(id=${product.id})}"
+             class="btn-secondary">Edit</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top: 20px;">
+    <a th:href="@{/}" class="btn">Back to Home</a>
+  </div>
+</div>
+</body>
+</html>

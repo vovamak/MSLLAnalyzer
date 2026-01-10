@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Management</title>
+  <link rel="stylesheet" th:href="@{/style.css}">
+  <style>
+    .form-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .parts-list {
+      margin-top: 20px;
+    }
+    .part-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- Исправлен условный оператор -->
+  <h1 th:text="${product.id == null} ? 'Add New Product' : 'Edit Product'">
+    Product Form
+  </h1>
+
+  <form th:action="@{/products/save}" method="post" th:object="${product}">
+    <input type="hidden" th:field="*{id}" />
+
+    <div class="form-section">
+      <h3>Basic Information</h3>
+      <div class="form-group">
+        <label>Product Code:</label>
+        <input type="text" th:field="*{productCode}" required class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Description:</label>
+        <textarea th:field="*{description}" rows="3" class="form-control"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Category:</label>
+        <input type="text" th:field="*{category}" class="form-control">
+      </div>
+    </div>
+
+    <div class="form-section">
+      <h3>Lists</h3>
+      <div class="form-group">
+        <label>Select Lists:</label><br>
+        <!-- Исправленный цикл для чекбоксов -->
+        <div th:each="list : ${availableLists}">
+          <input type="checkbox" th:value="${list}"
+                 th:id="${list}" th:name="lists">
+          <label th:for="${list}" th:text="${list}"></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Исправлено условие проверки ID -->
+    <div class="form-section" th:if="${product.id != null and product.id > 0}">
+      <h3>Part Numbers</h3>
+      <!-- Исправлена проверка на пустоту списка -->
+      <div class="parts-list" th:if="${not #lists.isEmpty(product.parts)}">
+        <h4>Current Parts:</h4>
+        <div th:each="part : ${product.parts}" class="part-item">
+          <span th:text="${part.partNumber} + ' (' + ${part.measureUnit} + ')'"></span>
+          <!-- Исправлена генерация URL -->
+          <a th:href="@{/products/{productId}/remove-part/{partId}(productId=${product.id}, partId=${part.id})}"
+             class="delete-btn">Remove</a>
+        </div>
+      </div>
+
+      <div class="add-part-form">
+        <h4>Add New Part:</h4>
+        <div class="form-group">
+          <input type="text" name="partNumber" placeholder="Part Number" required>
+          <input type="text" name="measureUnit" placeholder="Measure Unit">
+          <input type="number" name="priority" placeholder="Priority" value="1">
+          <!-- Исправлена генерация formaction -->
+          <button type="submit"
+                  th:formaction="@{'/products/' + ${product.id} + '/add-part'}"
+                  class="btn-secondary">Add Part</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button type="submit" class="btn-primary">Save Product</button>
+      <a th:href="@{/products}" class="btn">Cancel</a>
+    </div>
+  </form>
+</div>
+</body>
+</html>
